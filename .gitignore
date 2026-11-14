@@ -9,4 +9,7 @@ plots/*pdf
 plots/archive/*
 results/*
 *.Rproj
-*.ipynb
+model_test.ipynb
+optimal_strategies.ipynb
+processing.ipynb
+fig3.ipynb
