@@ -1,8 +1,9 @@
 source("R/plotting.R")
 source("R/functions.R")
 
+
 for(beta0 in c(4,40)){
-  d1 = read.table("results/L3_processed.csv",header=T,stringsAsFactors=F,sep=",")
+  d1 = read.table("results/L3_processed_new.csv",header=T,stringsAsFactors=F,sep=",")
   d1 = d1[d1$beta == beta0,]
   
   d1$strategy_pi = sapply(1:nrow(d1),function(i){
@@ -15,10 +16,7 @@ for(beta0 in c(4,40)){
   d1$strategy_theta[d1$strategy_pi == "always inactive"] = "always inactive"
   
   d1 = add_random_switching(d1)
-  d1$individual_fitness = pmax(pmax(d1$naive_fitness_analytical,0),d1$b-d1$c)
-  
-  d1$fitness_gain = (d1$fitness - d1$individual_fitness)/(d1$b+d1$c)
-  d1$fitness_gain_relative_to_random_switching = (d1$fitness - pmax(d1$individual_fitness,d1$maximum_naive_fitness_analytical))/(d1$b+d1$c)
+  d1 = calculate_fitness_increase(d1)
   
   d1$unique_id <- match(do.call(paste, d1[c("lambda", "b")]), 
                         unique(do.call(paste, d1[c("lambda", "b")])))
@@ -30,15 +28,15 @@ for(beta0 in c(4,40)){
   d = d[abs(d$x) <= 2,]
   d = d[d$x != 0,]
   
-  pdf(paste("plots/fig4_",beta0,".pdf",sep=""),width=4,height=4)
+  pdf(paste("plots/evolutionary_simulation_beta_",beta0,".pdf",sep=""),width=4,height=4)
   par(mgp=c(2,0.75,0))
   lambda_bc_plot(x = d$x, y = d$y, z = strategy_colors[d$strategy_pi])
   lambda_bc_plot(x = d$x, y = d$y, z = strategy_colors[d$strategy_theta])
   lambda_bc_plot(x = d$x, y = d$y, z = intensityColor(d$individual_fitness, max=2))
-  lambda_bc_plot(x = d$x, y = d$y, z = sapply(d$fitness_gain, fitness_increase_color))
+  lambda_bc_plot(x = d$x, y = d$y, z = sapply(d$fitness_increase, fitness_increase_color))
   dev.off()
   
-  pdf(paste("plots/figS4_",beta0,"_alleles.pdf",sep=""),width=3,height=3)
+  pdf(paste("plots/evolutionary_simulation_beta_",beta0,"_alleles.pdf",sep=""),width=3,height=3)
   par(mgp=c(2,0.75,0))
   for(par in c("piAA","piAB","piBA","piBB","thetaAA","thetaAB","thetaBA","thetaBB","rhoA","rhoB","meanA","meanB")){
     lambda_bc_plot_small(x = d$x, y = d$y, z = sapply(d[,par],trait_color), bty="n", main=par)
@@ -50,7 +48,3 @@ for(beta0 in c(4,40)){
   rect(0,0,1,1)
   dev.off()
 }
-
-
-d$theta_max = apply(d[,c("thetaAA","thetaAB","thetaBA","thetaBB")],1,max)
-lambda_bc_plot(x = d$x, y = d$y, z = sapply(d$theta_max, trait_color))

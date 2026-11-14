@@ -14,12 +14,12 @@ strategies["collective_regulation_II"] = Strategy(1,0,0,1,0,1,0,0,0,0)
 strategies["collective_regulation_III"] = Strategy(1,0,0,1,0,0,0,1,0,0)
 strategies["collective_regulation_IV"] = Strategy(1,0,0,1,0,0,1,0,0,0)
 
-lambda = 10 .^ collect(-2:0.05:2)
+lambda = 10 .^ collect(-2:0.01:2)
 beta = [0,1,4,10]
 gamma = [0]
 delta = [1e-6]
 alpha = [1]
-b = 2 .^collect(-4:0.1:4)
+b = 2 .^collect(-4:0.02:4)
 c = [1]
 n = [0, 5]
 

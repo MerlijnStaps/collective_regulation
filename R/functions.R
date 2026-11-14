@@ -90,3 +90,10 @@ calculate_winners <- function(d, strategy){
   d$random_switching_fitness_increase = (d$winner_fitness - d$maximum_naive_fitness_analytical)/(d$b+d$c)
   return(d)
 }
+
+calculate_fitness_increase <- function(d1){ # for evolutionary simulations
+  d1$individual_fitness = pmax(pmax(d1$naive_fitness_analytical,0),d1$b-d1$c)
+  d1$fitness_increase = (d1$fitness - d1$individual_fitness)/(d1$b+d1$c)
+  d1$random_switching_fitness_increase = (d1$fitness - pmax(d1$individual_fitness,d1$maximum_naive_fitness_analytical))/(d1$b+d1$c)
+  return(d1)
+}
