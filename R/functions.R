@@ -78,15 +78,15 @@ add_random_switching <- function(d1, add_random_inactivation = T, add_random_act
 }
 
 calculate_winners <- function(d, strategy){
-  strategies = c("naive_flexible","always_active","always_inactive",strategy) 
+  strategies = c("individual_regulation","always_active","always_inactive",strategy) 
   d$winner = strategies[apply(d[,paste(strategies,"fitness",sep="_")],1,which.max)]
   d$winner_fitness = apply(d[,paste(strategies,"fitness",sep="_")],1,max)
   d$individual_winner = strategies[apply(d[,paste(strategies[1:3],"fitness",sep="_")],1,which.max)]
   d$individual_fitness = apply(d[,paste(strategies[1:3],"fitness",sep="_")],1,max)
   d$fitness_increase = (d$winner_fitness - d$individual_fitness)/(d$b+d$c)
   d$random_switching_winner = d$winner
-  d$random_switching_winner[d$winner_fitness < d$maximum_naive_fitness_analytical] = "random_switching"
-  d$random_switching_winner[d$random_switching_winner == "naive_flexible"] = "random_switching"
+  d$random_switching_winner[d$winner_fitness < d$maximum_naive_fitness_analytical] = "individual_regulation_spontaneous"
+  d$random_switching_winner[d$random_switching_winner == "individual_regulation"] = "individual_regulation_spontaneous"
   d$random_switching_fitness_increase = (d$winner_fitness - d$maximum_naive_fitness_analytical)/(d$b+d$c)
   return(d)
 }
